@@ -1,52 +1,49 @@
-import React, { Component } from 'react';
-import './EmployeeForm.css'; // Import CSS for styling
+import React, { useState } from 'react';
+import './EmployeeForm.css';
 
-class EmployeeForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      email: '',
-      title: '',
-      department: '',
-    };
-  }
 
-  // Input changes and updates state
-  handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
+function EmployeeForm({ addEmployee }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    title: '',
+    department: '',
+  });
+
+  // Step 1: Handle input changes
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
 
-  // Form submission
-  handleSubmit = (event) => {
-    event.preventDefault(); // Prevents page reload
-    console.log('Employee Details:', this.state);
-    this.setState({ name: '', email: '', title: '', department: '' }); // Clears form
+  // Step 2: Handle form submission
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Ensure all fields are filled out
+    if (!formData.name || !formData.email || !formData.title || !formData.department) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    // Step 3: Pass data to App.js
+    addEmployee(formData);
+
+    // Reset form fields
+    setFormData({ name: '', email: '', title: '', department: '' });
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input type="text" name="name" value={this.state.name} onChange={this.handleChange} />
-        </label>
-        <label>
-          Email:
-          <input type="email" name="email" value={this.state.email} onChange={this.handleChange} />
-        </label>
-        <label>
-          Job Title:
-          <input type="text" name="title" value={this.state.title} onChange={this.handleChange} />
-        </label>
-        <label>
-          Department:
-          <input type="text" name="department" value={this.state.department} onChange={this.handleChange} />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
+      <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+      <input type="text" name="title" placeholder="Job Title" value={formData.title} onChange={handleChange} />
+      <input type="text" name="department" placeholder="Department" value={formData.department} onChange={handleChange} />
+      <button type="submit">Add Employee</button>
+    </form>
+  );
 }
 
 export default EmployeeForm;
