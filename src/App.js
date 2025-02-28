@@ -1,39 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import EmployeeForm from './EmployeeForm';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import EmployeeForm from "./EmployeeForm";
+import EmployeeList from "./EmployeeList";
+import EmployeeDetails from "./EmployeeDetails";
+import "./styles.css"; 
 
 function App() {
-  // Step 1: Load employees from Local Storage when the app starts
+  // Load employees from localStorage or initialize an empty array
   const [employees, setEmployees] = useState(() => {
-    const savedEmployees = localStorage.getItem('employees');
+    const savedEmployees = localStorage.getItem("employees");
     return savedEmployees ? JSON.parse(savedEmployees) : [];
   });
 
-  // Step 2: Save employees to Local Storage whenever it changes
+  // Save employees to localStorage when the list updates
   useEffect(() => {
-    localStorage.setItem('employees', JSON.stringify(employees));
+    localStorage.setItem("employees", JSON.stringify(employees));
   }, [employees]);
 
-  // Step 3: Function to add a new employee
+  // Function to add a new employee
   const addEmployee = (employee) => {
-    setEmployees((prevEmployees) => [...prevEmployees, employee]);
+    const newEmployee = { ...employee, EmployeeId: Date.now() }; 
+    setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
   };
 
   return (
-    <div>
-      <h1>Employee Form</h1>
-      <EmployeeForm addEmployee={addEmployee} />
-      <h2>Employee List</h2>
-      <ul>
-        {employees.map((employee, index) => (
-          <li key={index}>
-            {employee.name} - {employee.email} - {employee.title} - {employee.department}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Router>
+      <div className="container">
+        {/* Navigation Bar */}
+        <nav className="navbar">
+          <Link to="/" className="nav-link">Add Employee</Link>
+          <Link to="/employees" className="nav-link">Employee List</Link>
+        </nav>
+
+        {/* Define Routes */}
+        <Routes>
+          <Route path="/" element={<EmployeeForm addEmployee={addEmployee} />} />
+          <Route path="/employees" element={<EmployeeList employees={employees} />} />
+          <Route path="/employees/:id" element={<EmployeeDetails employees={employees} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
 export default App;
-
-

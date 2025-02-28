@@ -1,48 +1,44 @@
-import React, { useState } from 'react';
-import './EmployeeForm.css';
-
+import React, { useState } from "react";
 
 function EmployeeForm({ addEmployee }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    title: '',
-    department: '',
+  const [employee, setEmployee] = useState({
+    name: "",
+    email: "",
+    title: "",
+    department: "",
   });
 
-  // Step 1: Handle input changes
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
+  const handleChange = (e) => {
+    setEmployee({ ...employee, [e.target.name]: e.target.value });
   };
 
-  // Step 2: Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // Ensure all fields are filled out
-    if (!formData.name || !formData.email || !formData.title || !formData.department) {
-      alert('Please fill out all fields');
-      return;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (employee.name && employee.email && employee.title && employee.department) {
+      addEmployee(employee);
+      setEmployee({ name: "", email: "", title: "", department: "" });
     }
-
-    // Step 3: Pass data to App.js
-    addEmployee(formData);
-
-    // Reset form fields
-    setFormData({ name: '', email: '', title: '', department: '' });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
-      <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-      <input type="text" name="title" placeholder="Job Title" value={formData.title} onChange={handleChange} />
-      <input type="text" name="department" placeholder="Department" value={formData.department} onChange={handleChange} />
-      <button type="submit">Add Employee</button>
-    </form>
+    <div className="employee-form">
+      <h2>Add Employee</h2>
+      <form onSubmit={handleSubmit}>
+        <label>Name:</label>
+        <input type="text" name="name" value={employee.name} onChange={handleChange} required />
+
+        <label>Email:</label>
+        <input type="email" name="email" value={employee.email} onChange={handleChange} required />
+
+        <label>Title:</label>
+        <input type="text" name="title" value={employee.title} onChange={handleChange} required />
+
+        <label>Department:</label>
+        <input type="text" name="department" value={employee.department} onChange={handleChange} required />
+
+        <button type="submit">Add Employee</button>
+      </form>
+    </div>
   );
 }
 
