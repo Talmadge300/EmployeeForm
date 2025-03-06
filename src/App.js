@@ -6,7 +6,7 @@ import EmployeeDetails from "./EmployeeDetails";
 import "./styles.css"; 
 
 function App() {
-  // Load employees from localStorage or initialize an empty array
+  // Employees from localStorage or initialize an empty array
   const [employees, setEmployees] = useState(() => {
     const savedEmployees = localStorage.getItem("employees");
     return savedEmployees ? JSON.parse(savedEmployees) : [];
@@ -17,25 +17,29 @@ function App() {
     localStorage.setItem("employees", JSON.stringify(employees));
   }, [employees]);
 
-  // Function to add a new employee
+  // Add a new employee
   const addEmployee = (employee) => {
     const newEmployee = { ...employee, EmployeeId: Date.now() }; 
     setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
   };
 
+  // Delete an employee
+  const deleteEmployee = (id) => {
+    const updatedEmployees = employees.filter((employee) => employee.EmployeeId !== id);
+    setEmployees(updatedEmployees);
+  };
+
   return (
     <Router>
       <div className="container">
-        {/* Navigation Bar */}
         <nav className="navbar">
           <Link to="/" className="nav-link">Add Employee</Link>
           <Link to="/employees" className="nav-link">Employee List</Link>
         </nav>
 
-        {/* Define Routes */}
         <Routes>
           <Route path="/" element={<EmployeeForm addEmployee={addEmployee} />} />
-          <Route path="/employees" element={<EmployeeList employees={employees} />} />
+          <Route path="/employees" element={<EmployeeList employees={employees} deleteEmployee={deleteEmployee} />} />
           <Route path="/employees/:id" element={<EmployeeDetails employees={employees} />} />
         </Routes>
       </div>
@@ -44,3 +48,4 @@ function App() {
 }
 
 export default App;
+
